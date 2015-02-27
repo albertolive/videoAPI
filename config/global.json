@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "_default": {
+            "link": "infoVideo"
+        }, 
+        "infoVideo": {
+            "applicationId": "7lOHcwVNB0ooQ0NA9N2MBAVljYWQEj5sij52S4QE", 
+            "masterKey": "XpQphDljyeHak3hRrzvDdtf0FnEPC7nwPmUv7QMB"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.5"
+    }
+}
