@@ -1,19 +1,16 @@
 var _ = require('underscore');
 
-Parse.Cloud.job('youtube', function(request, status) {
+Parse.Cloud.job('vimeo', function(request, status) {
 	Parse.Cloud.httpRequest({
-	  url: 'https://www.googleapis.com/youtube/v3/activities/',
+	  url: 'https://api.vimeo.com/',
 	  params: {
-	  	'part': 'contentDetails',
-	  	'channelId': 'UCQHwCPItWeOJMx5_NWY1y_g',
-	  	'maxResults': 50,
-	  	'key': 'AIzaSyAN4CHpB3th3FJ0hhhtI5YjGXyD4tw847k'
+	  	'scope': '5e32ecbfff92f594092cefc20cb6c929'
 	  },
 	  success: function(httpResponse) {
-	  	var Youtube = Parse.Object.extend("youtube");
+	  	var Youtube = Parse.Object.extend("vimeo");
 		var prom = _.map(httpResponse.data.items, function(singleItem){
 
-			var query = new Parse.Query("youtube");
+			var query = new Parse.Query("vimeo");
 		  	query.equalTo('externalId', singleItem.contentDetails.upload.videoId)
 			return query.first().then(function(foundedYoutube) {
 
@@ -38,7 +35,7 @@ Parse.Cloud.job('youtube', function(request, status) {
 	});
 });
 
-Parse.Cloud.afterSave("youtube", function(request) {
+Parse.Cloud.afterSave("vimeo", function(request) {
 		var query = new Parse.Query("youtube");
 		query.get(request.object.id).then(function(youtubeObject) {
 
@@ -66,7 +63,7 @@ Parse.Cloud.afterSave("youtube", function(request) {
 	});
 });
 
-Parse.Cloud.define('videoPlays', function(request, request) {
+Parse.Cloud.define('vimeoPlays', function(request, request) {
 	var query = new Parse.Query("youtube");
 	query.find().then(function(youtubeCollection) {
 		var results = [];

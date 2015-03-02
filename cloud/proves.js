@@ -1,18 +1,12 @@
 
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
-// Parse.Cloud.define("hello", function(request, response) {
-//   response.success("Hello world!");
-// });
-
-Parse.Cloud.define("video", function(request, response) {
+Parse.Cloud.define("vimeo", function(request, response) {
 	Parse.Cloud.httpRequest({
-	  url: 'https://www.googleapis.com/youtube/v3/activities/',
+	  url: 'https://api.vimeo.com/',
+	  headers: {
+	    'Content-Type': 'application/vnd.vimeo.video+json'
+	  },
 	  params: {
-	  	'part': 'contentDetails',
-	  	'channelId': 'UCQHwCPItWeOJMx5_NWY1y_g',
-	  	'maxResults': 50,
-	  	'key': 'AIzaSyAN4CHpB3th3FJ0hhhtI5YjGXyD4tw847k'
+	  	'access_token': '5e32ecbfff92f594092cefc20cb6c929'
 	  },
 	  success: function(httpResponse) {
 	  	console.log("text: " + httpResponse);
