@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 Parse.Cloud.job('video', function(request, status) {
 	Parse.Cloud.httpRequest({
 	  url: 'https://www.googleapis.com/youtube/v3/activities/',
@@ -8,13 +10,23 @@ Parse.Cloud.job('video', function(request, status) {
 	  	'key': 'AIzaSyAN4CHpB3th3FJ0hhhtI5YjGXyD4tw847k'
 	  },
 	  success: function(httpResponse) {
-	  	var prom = [];
-	  	for (var i = httpResponse.data.items.length - 1; i >= 0; i--) {
-	  		// console.log(httpResponse.data.items[i].contentDetails.upload.videoId);
-	  		prom.push(myFunction(httpResponse.data.items[i].contentDetails.upload.videoId));
-	  	};
+	  	var Youtube = Parse.Object.extend("youtube");
+		var prom = _.map(httpResponse.data.items, function(singleItem){
 
-		//status.success(httpResponse);
+			var query = new Parse.Query("youtube");
+		  	query.equalTo('externalId', singleItem.contentDetails.upload.videoId)
+			return query.first().then(function(foundedYoutube) {
+
+				if(foundedYoutube){
+					return foundedYoutube.save();
+				}else{
+					var youtubeObject = new Youtube();
+			  		youtubeObject.set('externalId', singleItem.contentDetails.upload.videoId);
+					return youtubeObject.save();
+				}
+			});
+		});
+
 	  	Parse.Promise.when(prom).then(function() {
 	  		status.success();
 	  	});
@@ -26,43 +38,46 @@ Parse.Cloud.job('video', function(request, status) {
 	});
 });
 
+Parse.Cloud.afterSave("youtube", function(request) {
+		var query = new Parse.Query("youtube");
+		query.get(request.object.id).then(function(youtubeObject) {
 
-var myFunction = function(request){
- return Parse.Cloud.httpRequest({
-	  url: 'https://www.googleapis.com/youtube/v3/videos/',
-	  params: {
-	  	'part': 'statistics,snippet',
-	  	'id': request,
-	  	'maxResults': 50,
-	  	'key': 'AIzaSyAN4CHpB3th3FJ0hhhtI5YjGXyD4tw847k'
-	  },
-	  success: function(httpResponse) {
-	  	// console.log("Title: " + httpResponse.data.items[0].snippet.title);
-	  	// console.log("Views: " + httpResponse.data.items[0].statistics.viewCount);
+		Parse.Cloud.httpRequest({
+		  url: 'https://www.googleapis.com/youtube/v3/videos/',
+		  params: {
+		  	'part': 'statistics,snippet',
+		  	'id': youtubeObject.get('externalId'),
+		  	'maxResults': 50,
+		  	'key': 'AIzaSyAN4CHpB3th3FJ0hhhtI5YjGXyD4tw847k'
+		  },
+		  success: function(httpResponse) {
+		  	if(youtubeObject.get('title') === undefined){
+		  		youtubeObject.set("title", httpResponse.data.items[0].snippet.title);
+	      		youtubeObject.set("publishedAt", httpResponse.data.items[0].snippet.publishedAt);
+		  	}
+	  	  	youtubeObject.set("plays", parseInt(httpResponse.data.items[0].statistics.viewCount));
+	  		// save all the newly created objects
+		    youtubeObject.save();
+		  },
+		  error: function(httpResponse) {
+		    console.error('Request failed with response code ' + httpResponse.status);
+		  }
+		});
+	});
+});
 
-		var Youtube = Parse.Object.extend("youtube");
-		var saveArray = [];
-      	var youtube = new Youtube();
+Parse.Cloud.define('videoPlays', function(request, request) {
+	var query = new Parse.Query("youtube");
+	query.find().then(function(youtubeCollection) {
+		var results = [];
+		_.each(youtubeCollection, function(singleYoutubeObject){
+			var obj = {
+				title: singleYoutubeObject.get('title'),
+				plays: singleYoutubeObject.get('plays')
+			}
+			results.push(obj);
+		});
 
-      	youtube.set("title", httpResponse.data.items[0].snippet.title);
-      	youtube.set("publishedAt", httpResponse.data.items[0].snippet.publishedAt);
-  	  	youtube.set("plays", parseInt(httpResponse.data.items[0].statistics.viewCount));
-      	saveArray.push(youtube);
-
-      		Parse.Promise.when(saveArray).then(function() {
-		  		// save all the newly created objects
-			    Parse.Object.saveAll(saveArray, {
-			        success: function(objs) {
-			            alert('New object created with objectId: ' + youtube.id);
-			        },
-			        error: function(error) {
-			            alert('Failed to create new object, with error code: ' + error.message);
-			        }
-			    });
-  			});
-	  },
-	  error: function(httpResponse) {
-	    console.error('Request failed with response code ' + httpResponse.status);
-	  }
-	})
-};
+		request.success(results);
+	});
+});
