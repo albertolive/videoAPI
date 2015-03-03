@@ -32,7 +32,7 @@ Parse.Cloud.job('youtube', function(request, status) {
 	  	});
 	  },
 	  error: function(httpResponse) {
-	  	status.error(err);
+	  	status.error(httpResponse);
 	    console.error('Request failed with response code ' + httpResponse.status);
 	  }
 	});

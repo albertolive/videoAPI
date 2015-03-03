@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 Parse.Cloud.job('vimeoTest', function(request, status) {
 	Parse.Cloud.httpRequest({
 	  url: 'https://api.vimeo.com/me/videos',
@@ -13,7 +15,13 @@ Parse.Cloud.job('vimeoTest', function(request, status) {
 
 	  	console.log("text: " + httpResponse.text);
 
+	  	// _.each(httpResponse.text, function(singleItem){
+	  	// 	console.log(singleItem);
+	  	// });
+
+
 	  	status.success();
+
 	  },
 	  error: function(httpResponse) {
 	  	status.error(httpResponse);
