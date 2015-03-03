@@ -2,12 +2,15 @@ var _ = require('underscore');
 
 Parse.Cloud.job('vimeo', function(request, status) {
 	Parse.Cloud.httpRequest({
-	  url: 'https://api.vimeo.com/',
+	  url: 'https://api.vimeo.com/me/videos/',
+	  headers: {
+	    'Content-Type': 'application/vnd.vimeo.video+json'
+	  },
 	  params: {
-	  	'scope': '5e32ecbfff92f594092cefc20cb6c929'
+	  	'access_token': '5e32ecbfff92f594092cefc20cb6c929'
 	  },
 	  success: function(httpResponse) {
-	  	var Youtube = Parse.Object.extend("vimeo");
+	  	var Vimeo = Parse.Object.extend("vimeo");
 		var prom = _.map(httpResponse.data.items, function(singleItem){
 
 			var query = new Parse.Query("vimeo");
@@ -17,7 +20,7 @@ Parse.Cloud.job('vimeo', function(request, status) {
 				if(foundedYoutube){
 					return foundedYoutube.save();
 				}else{
-					var youtubeObject = new Youtube();
+					var vimeoObject = new Vimeo();
 			  		youtubeObject.set('externalId', singleItem.contentDetails.upload.videoId);
 					return youtubeObject.save();
 				}
@@ -29,7 +32,7 @@ Parse.Cloud.job('vimeo', function(request, status) {
 	  	});
 	  },
 	  error: function(httpResponse) {
-	  	status.error(err);
+	  	status.error(httpResponse);
 	    console.error('Request failed with response code ' + httpResponse.status);
 	  }
 	});
