@@ -1,4 +1,4 @@
-Parse.Cloud.define('vimeoTest', function(request, response) {
+Parse.Cloud.job('vimeoTest', function(request, status) {
 	Parse.Cloud.httpRequest({
 	  url: 'https://api.vimeo.com/me/videos',
 	  headers: {
@@ -11,20 +11,12 @@ Parse.Cloud.define('vimeoTest', function(request, response) {
 	  },
 	  success: function(httpResponse) {
 
-	  	var myEscapedJSONString = httpResponse.text.replace(/\\n/g, "\\n")
-		                                      .replace(/\\'/g, "\\'")
-		                                      .replace(/\\"/g, '\\"')
-		                                      .replace(/\\&/g, "\\&")
-		                                      .replace(/\\r/g, "\\r")
-		                                      .replace(/\\t/g, "\\t")
-		                                      .replace(/\\b/g, "\\b")
-		                                      .replace(/\\f/g, "\\f");
-	  	console.log("text: " + httpResponse.text.total);
+	  	console.log("text: " + httpResponse.text);
 
-	  	response.success(myEscapedJSONString);
+	  	status.success();
 	  },
 	  error: function(httpResponse) {
-	  	response.error(httpResponse);
+	  	status.error(httpResponse);
 	    console.error('Request failed with response code ' + httpResponse.status);
 	  }
 	});

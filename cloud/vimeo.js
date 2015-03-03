@@ -2,12 +2,14 @@ var _ = require('underscore');
 
 Parse.Cloud.job('vimeo', function(request, status) {
 	Parse.Cloud.httpRequest({
-	  url: 'https://api.vimeo.com/me/videos/',
+	  url: 'https://api.vimeo.com/me/videos',
 	  headers: {
 	    'Content-Type': 'application/vnd.vimeo.video+json'
 	  },
 	  params: {
-	  	'access_token': '5e32ecbfff92f594092cefc20cb6c929'
+	  	'access_token': '5e32ecbfff92f594092cefc20cb6c929',
+	  	'per_page': 1,
+	  	'sort': 'plays'
 	  },
 	  success: function(httpResponse) {
 	  	var Vimeo = Parse.Object.extend("vimeo");
