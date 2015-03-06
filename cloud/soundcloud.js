@@ -17,22 +17,6 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 				soundcloudObject.set('plays', parseInt(singleItem.playback_count));
 				soundcloudObject.save();
 			});
-			// for (var i = 0; i < httpResponse.data.length; i++) {
-
-			// 	var query = new Parse.Query("soundcloud");
-			// 	query.get(httpResponse.data[i].title).then(function(soundcloudObject) {
-			// 		console.log(soundcloudObject);
-			// 		var soundcloudObject = new Soundcloud();
-			// 		if (!foundedSoundcloud) {
-			// 			console.log("no esta");
-			// 			soundcloudObject.set("title", httpResponse.data[i].title);
-		 //      			soundcloudObject.set("publishedAt", httpResponse.data[i].created_at);
-			// 		}
-			// 		soundcloudObject.set("plays", parseInt(httpResponse.data[i].playback_count));
-			//   		// save all the newly created objects
-			// 	    return soundcloudObject.save();
-			// 	});
-			// };
 			Parse.Promise.when(prom).then(function() {
 		  		status.success();
 		  	});
@@ -43,16 +27,6 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 		  }
 	});
 });
-
-
-				// var soundcloudObject = new Soundcloud();
-				// if(soundcloudObject.get('title') === undefined) {
-			 //  		soundcloudObject.set("title", httpResponse.data[i].title);
-		  //     		soundcloudObject.set("publishedAt", httpResponse.data[i].created_at);
-			 //  	}
-		  // 	  	soundcloudObject.set("plays", parseInt(httpResponse.data[i].playback_count));
-		  // 		// save all the newly created objects
-			 //    soundcloudObject.save();
 
 // Parse.Cloud.define('soundCloudPlays', function(request, request) {
 // 	var query = new Parse.Query("youtube");
