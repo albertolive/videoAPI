@@ -4,4 +4,4 @@ require('cloud/soundcloud.js');
 
 require('cloud/vimeo.js');
 
-require('cloud/proves.js');
+require('cloud/dailymotion.js');
