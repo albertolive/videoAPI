@@ -9,13 +9,18 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 		success: function(httpResponse) {
 			var Soundcloud = Parse.Object.extend("soundcloud");
 			var prom = _.map(httpResponse.data, function(singleItem) {
-				//console.log(singleItem.created_at);
-				var soundcloudObject = new Soundcloud();
-				soundcloudObject.set('externalId', singleItem.id);
-				soundcloudObject.set('title', singleItem.title);
-				soundcloudObject.set('publishedAt', singleItem.created_at);
-				soundcloudObject.set('plays', parseInt(singleItem.playback_count));
-				soundcloudObject.save();
+				var query = new Parse.Query("soundcloud");
+				query.equalTo('externalId', singleItem.id)
+				return query.first().then(function(foundedSoundcloud) {
+
+					if(foundedSoundcloud){
+						return foundedSoundcloud.save();
+					}else{
+						var soundcloudObject = new Soundcloud();
+				  		soundcloudObject.set('externalId', singleItem.id);
+						return soundcloudObject.save();
+					}
+				});
 			});
 			Parse.Promise.when(prom).then(function() {
 		  		status.success();
@@ -28,6 +33,32 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 	});
 });
 
+Parse.Cloud.afterSave("soundcloud", function(request) {
+	var query = new Parse.Query("soundcloud");
+	query.get(request.object.id).then(function(soundcloudObject) {
+		Parse.Cloud.httpRequest({
+		 	url: 'https://api.soundcloud.com/users/827566/tracks/',
+		 	params: {
+		  		'client_id': '53af733efcdd4d7055d576217b95752a'
+ 			},
+			success: function(httpResponse) {
+				_.map(httpResponse.data, function(singleItem) {
+					if (soundcloudObject.get('externalId') == singleItem.id) {
+						if(soundcloudObject.get('title') === undefined){
+							soundcloudObject.set('title', singleItem.title);
+							soundcloudObject.set('publishedAt', singleItem.created_at);
+						}
+							soundcloudObject.set('plays', parseInt(singleItem.playback_count));
+							soundcloudObject.save();
+					}
+				});
+			},
+			error: function(httpResponse) {
+			    console.error('Request failed with response code ' + httpResponse.status);
+			}
+		});
+	});
+});
 // Parse.Cloud.define('soundCloudPlays', function(request, request) {
 // 	var query = new Parse.Query("youtube");
 // 	query.find().then(function(youtubeCollection) {
