@@ -7,3 +7,4 @@ require('cloud/vimeo.js');
 require('cloud/dailymotion.js');
 
 require('cloud/total.js');
+
