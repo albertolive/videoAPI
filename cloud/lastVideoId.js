@@ -2,15 +2,16 @@ var _ = require('underscore');
 
 exports.calculate = function() {
 	var queryTotals = new Parse.Query('total');
-	queryTotals.find().then(function(totalCollection){
-		var results = [];
-		_.each(totalCollection, function(singleTotal){
-			var obj = {
-				plays: singleTotal.get('idTotal')
-			}
-			results.push((obj.plays));
-		});
-		var result = Math.max.apply( Math, results);
-		return result.toString();
+	queryTotals.descending('idTotal');
+	
+	return queryTotals.first().then(function(totalCollection){
+
+		var successful = new Parse.Promise();
+		successful.resolve((totalCollection.get('idTotal')+1)+"");
+ 
+		return successful;
 	});
 };
+
+
+

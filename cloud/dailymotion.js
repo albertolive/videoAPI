@@ -13,9 +13,14 @@ Parse.Cloud.job('dailymotion', function(request, status) {
 					if(foundedDailymotion){
 						return foundedDailymotion.save();
 					}else{
-						var dailymotionObject = new Dailymotion();
-				  		dailymotionObject.set('externalId', singleItem.id);
-						return dailymotionObject.save();
+						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
+							var dailymotionObject = new Dailymotion();
+
+					  		dailymotionObject.set('externalId', singleItem.id);
+					  		dailymotionObject.set('dailymotionId', newVideoId);
+
+							return dailymotionObject.save();
+						});
 					}
 				});
 			});

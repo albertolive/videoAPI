@@ -23,9 +23,14 @@ Parse.Cloud.job('vimeo', function(request, status) {
 				if(foundedVimeo){
 					return foundedVimeo.save();
 				}else{
-					var vimeoObject = new Vimeo();
-			  		vimeoObject.set('externalId', singleItem.uri);
-					return vimeoObject.save();
+					return Parse.Promise.when(getLastVideo.calculate()).then(function(testValue){
+						var vimeoObject = new Vimeo();
+
+				  		vimeoObject.set('externalId', singleItem.uri);
+				  		vimeoObject.set('vimeoId', newVideoId);
+
+						return vimeoObject.save();
+					});
 				}
 			});
 		});

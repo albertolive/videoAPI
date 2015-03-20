@@ -20,9 +20,14 @@ Parse.Cloud.job('youtube', function(request, status) {
 				if(foundedYoutube){
 					return foundedYoutube.save();
 				}else{
-					var youtubeObject = new Youtube();
-			  		youtubeObject.set('externalId', singleItem.contentDetails.upload.videoId);
-					return youtubeObject.save();
+					return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
+						var youtubeObject = new Youtube();
+
+				  		youtubeObject.set('externalId', singleItem.contentDetails.upload.videoId);
+				  		youtubeObject.set('youtubeId', newVideoId);
+
+						return youtubeObject.save();
+					});
 				}
 			});
 		});
@@ -67,18 +72,18 @@ Parse.Cloud.afterSave("youtube", function(request) {
 	});
 });
 
-Parse.Cloud.define('videoPlays', function(request, request) {
-	var query = new Parse.Query("youtube");
-	query.find().then(function(youtubeCollection) {
-		var results = [];
-		_.each(youtubeCollection, function(singleYoutubeObject){
-			var obj = {
-				title: singleYoutubeObject.get('title'),
-				plays: singleYoutubeObject.get('plays')
-			}
-			results.push(obj);
-		});
+// Parse.Cloud.define('videoPlays', function(request, request) {
+// 	var query = new Parse.Query("youtube");
+// 	query.find().then(function(youtubeCollection) {
+// 		var results = [];
+// 		_.each(youtubeCollection, function(singleYoutubeObject){
+// 			var obj = {
+// 				title: singleYoutubeObject.get('title'),
+// 				plays: singleYoutubeObject.get('plays')
+// 			}
+// 			results.push(obj);
+// 		});
 
-		request.success(results);
-	});
-});
+// 		request.success(results);
+// 	});
+// });
