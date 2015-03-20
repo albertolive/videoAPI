@@ -53,6 +53,7 @@ exports.calculateTotal = function(totalObj){
 				totalObj.set('plays', totalPlays);
 			}
 			if (vimeoTitle || totalObj.get('plays') !== totalPlays) {
+				console.log('New plays!');
 				return totalObj.save();
 			}
 		});
