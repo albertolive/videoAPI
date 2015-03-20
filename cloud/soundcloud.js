@@ -59,7 +59,10 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 						if (soundcloudObject.get('plays') !== parseInt(singleItem.playback_count)) {
 							soundcloudObject.set('plays', parseInt(singleItem.playback_count));
 						}
-						soundcloudObject.save();
+						if (soundcloudObject.get('title') === undefined || soundcloudObject.get('plays') !== parseInt(singleItem.playback_count)) {
+					  		console.log('New plays!');
+					  		soundcloudObject.save();
+					  	}
 					}
 				});
 			},

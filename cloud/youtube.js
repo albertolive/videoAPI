@@ -63,7 +63,10 @@ Parse.Cloud.afterSave("youtube", function(request) {
 		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
 		  	  	youtubeObject.set("plays", parseInt(httpResponse.data.items[0].statistics.viewCount));
 		    }
-		    youtubeObject.save();
+		    if (youtubeObject.get('title') === undefined || youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
+		  		console.log('New plays!');
+		  		youtubeObject.save();
+		  	}
 		  },
 		  error: function(httpResponse) {
 		    console.error('Request failed with response code ' + httpResponse.status);
