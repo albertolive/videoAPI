@@ -55,8 +55,9 @@ Parse.Cloud.afterSave("youtube", function(request) {
 		  		youtubeObject.set("title", httpResponse.data.items[0].snippet.title);
 	      		youtubeObject.set("publishedAt", httpResponse.data.items[0].snippet.publishedAt);
 		  	}
-	  	  	youtubeObject.set("plays", parseInt(httpResponse.data.items[0].statistics.viewCount));
-	  		// save all the newly created objects
+		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
+		  	  	youtubeObject.set("plays", parseInt(httpResponse.data.items[0].statistics.viewCount));
+		    }
 		    youtubeObject.save();
 		  },
 		  error: function(httpResponse) {

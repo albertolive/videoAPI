@@ -8,3 +8,5 @@ require('cloud/dailymotion.js');
 
 require('cloud/total.js');
 
+require('cloud/proves.js');
+

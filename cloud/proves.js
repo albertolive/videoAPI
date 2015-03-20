@@ -1,31 +1,20 @@
 var _ = require('underscore');
+var getLastVideo = require('cloud/lastVideoId.js');
 
-Parse.Cloud.job('vimeoTest', function(request, status) {
-	Parse.Cloud.httpRequest({
-	  url: 'https://api.vimeo.com/me/videos',
-	  headers: {
-	    'Content-Type': 'application/vnd.vimeo.video+json'
-	  },
-	  params: {
-	  	'access_token': '5e32ecbfff92f594092cefc20cb6c929',
-	  	'per_page': 1,
-	  	'sort': 'plays'
-	  },
-	  success: function(httpResponse) {
-
-	  	console.log("text: " + httpResponse.text);
-
-	  	// _.each(httpResponse.text, function(singleItem){
-	  	// 	console.log(singleItem);
-	  	// });
-
-
-	  	status.success();
-
-	  },
-	  error: function(httpResponse) {
-	  	status.error(httpResponse);
-	    console.error('Request failed with response code ' + httpResponse.status);
-	  }
-	});
+Parse.Cloud.job('lastVideos', function(request, status) {
+	
+	console.log("si " + getLastVideo.calculate());
+	status.success('Success');
+	// var queryTotals = new Parse.Query('total');
+	// queryTotals.find().then(function(totalCollection){
+	// 	var results = [];
+	// 	_.each(totalCollection, function(singleTotal){
+	// 		var obj = {
+	// 			plays: singleTotal.get('idTotal')
+	// 		}
+	// 		results.push((obj.plays));
+	// 	});
+	// 	var result = Math.max.apply( Math, results);
+	// 	status.success(result.toString());
+	// });
 });

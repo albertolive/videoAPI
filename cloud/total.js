@@ -12,7 +12,7 @@ Parse.Cloud.job('totalVideoPlays', function(request, status) {
 		});	
 
 		Parse.Promise.when(dependencies).then(function() {
-	  		status.success('Well done bix!');
+	  		status.success('Success');
 	  	});
 	});
 	

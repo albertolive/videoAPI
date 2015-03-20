@@ -1,4 +1,5 @@
 var _ = require('underscore');
+//var getLastVideo = require('cloud/lastVideoId.js');
 
 Parse.Cloud.job('soundcloud', function(request, status) {
 	Parse.Cloud.httpRequest({
@@ -14,6 +15,7 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 				return query.first().then(function(foundedSoundcloud) {
 
 					if(foundedSoundcloud){
+						//console.log("Last " + getLastVideo.calculate());
 						return foundedSoundcloud.save();
 					}else{
 						var soundcloudObject = new Soundcloud();
@@ -48,8 +50,10 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 							soundcloudObject.set('title', singleItem.title);
 							soundcloudObject.set('publishedAt', singleItem.created_at);
 						}
+						if (soundcloudObject.get('plays') !== parseInt(singleItem.playback_count)) {
 							soundcloudObject.set('plays', parseInt(singleItem.playback_count));
-							soundcloudObject.save();
+						}
+						soundcloudObject.save();
 					}
 				});
 			},

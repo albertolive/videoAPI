@@ -41,8 +41,10 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 						if(dailymotionObject.get('title') === undefined){
 							dailymotionObject.set('title', singleItem.title);
 						}
+						if (dailymotionObject.get('plays') !== parseInt(singleItem.views_total)) {
 							dailymotionObject.set('plays', parseInt(singleItem.views_total));
-							dailymotionObject.save();
+						}
+						dailymotionObject.save();
 					}
 				});
 			},

@@ -59,12 +59,14 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 
 		  	_.map(getData.data, function(singleItem) {
 		  		if (vimeoObject.get('externalId') == singleItem.uri) {
-				  	if(vimeoObject.get('title') === undefined){
+				  	if (vimeoObject.get('title') === undefined) {
 				  		vimeoObject.set("title", singleItem.name);
 			      		vimeoObject.set("publishedAt", singleItem.created_time);
 				  	}
-			  	  	vimeoObject.set("plays", parseInt(singleItem.stats.plays));
-				    vimeoObject.save();
+				  	if (vimeoObject.get('plays') !== parseInt(singleItem.stats.plays)) {
+				  		vimeoObject.set('plays', parseInt(singleItem.stats.plays));
+				  	}
+			    	vimeoObject.save();
 			    }
 		    });
 		  },
