@@ -18,7 +18,9 @@ Parse.Cloud.job('youtube', function(request, status) {
 			return query.first().then(function(foundedYoutube) {
 
 				if(foundedYoutube){
-					return foundedYoutube.save();
+					if (foundedYoutube.get('plays') !== parseInt(singleItem.views_total)) {
+						return foundedYoutube.save();
+					}
 				}else{
 					return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 						var youtubeObject = new Youtube();
