@@ -15,7 +15,9 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 				return query.first().then(function(foundedSoundcloud) {
 
 					if(foundedSoundcloud){
-						return foundedSoundcloud.save();
+						if (foundedSoundcloud.get('plays') !== parseInt(singleItem.playback_count)) {
+							return foundedSoundcloud.save();
+						}
 					}else{
 
 						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
@@ -57,10 +59,8 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 							soundcloudObject.set('publishedAt', singleItem.created_at);
 							soundcloudObject.save();
 						}
-						if (soundcloudObject.get('plays') !== parseInt(singleItem.playback_count)) {
-							soundcloudObject.set('plays', parseInt(singleItem.playback_count));
-					  		soundcloudObject.save();
-					  	}
+						soundcloudObject.set('plays', parseInt(singleItem.playback_count));
+				  		soundcloudObject.save();
 					}
 				});
 			},
@@ -70,18 +70,20 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 		});
 	});
 });
-// Parse.Cloud.define('soundCloudPlays', function(request, request) {
-// 	var query = new Parse.Query("youtube");
-// 	query.find().then(function(youtubeCollection) {
-// 		var results = [];
-// 		_.each(youtubeCollection, function(singleYoutubeObject){
-// 			var obj = {
-// 				title: singleYoutubeObject.get('title'),
-// 				plays: singleYoutubeObject.get('plays')
-// 			}
-// 			results.push(obj);
-// 		});
 
-// 		request.success(results);
-// 	});
-// });
+Parse.Cloud.define('soundCloudPlays', function(request, request) {
+	var query = new Parse.Query("youtube");
+	query.find().then(function(soundcloudCollection) {
+		var results = [];
+		_.each(soundcloudCollection, function(singleSoundcloud){
+			var obj = {
+				id: singleSoundcloud.get('soundCloudId'),
+				title: singleSoundcloud.get('title'),
+				plays: singleSoundcloud.get('plays')
+			}
+			results.push(obj);
+		});
+
+		request.success(results);
+	});
+});

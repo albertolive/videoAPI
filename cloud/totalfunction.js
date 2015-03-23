@@ -56,3 +56,19 @@ exports.calculateTotal = function(totalObj){
 		});
 	});	
 };
+
+Parse.Cloud.define('totalPlays', function(request, request) {
+	var query = new Parse.Query("total");
+	query.find().then(function(totalCollection) {
+		var results = [];
+		_.each(totalCollection, function(singleTotal){
+			var obj = {
+				title: singleTotal.get('title'),
+				plays: singleTotal.get('plays')
+			}
+			results.push(obj);
+		});
+
+		request.success(results);
+	});
+});

@@ -73,18 +73,19 @@ Parse.Cloud.afterSave("youtube", function(request) {
 	});
 });
 
-// Parse.Cloud.define('videoPlays', function(request, request) {
-// 	var query = new Parse.Query("youtube");
-// 	query.find().then(function(youtubeCollection) {
-// 		var results = [];
-// 		_.each(youtubeCollection, function(singleYoutubeObject){
-// 			var obj = {
-// 				title: singleYoutubeObject.get('title'),
-// 				plays: singleYoutubeObject.get('plays')
-// 			}
-// 			results.push(obj);
-// 		});
+Parse.Cloud.define('youtubePlays', function(request, request) {
+	var query = new Parse.Query("youtube");
+	query.find().then(function(youtubeCollection) {
+		var results = [];
+		_.each(youtubeCollection, function(singleYoutube){
+			var obj = {
+				id: singleSoundcloud.get('youtubeId'),
+				title: singleYoutube.get('title'),
+				plays: singleYoutube.get('plays')
+			}
+			results.push(obj);
+		});
 
-// 		request.success(results);
-// 	});
-// });
+		request.success(results);
+	});
+});

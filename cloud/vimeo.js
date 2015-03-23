@@ -21,7 +21,9 @@ Parse.Cloud.job('vimeo', function(request, status) {
 			return query.first().then(function(foundedVimeo) {
 
 				if(foundedVimeo){
-					return foundedVimeo.save();
+					if (foundedVimeo.get('plays') !== parseInt(singleItem.stats.plays)) {
+						return foundedVimeo.save();
+					}
 				}else{
 					return Parse.Promise.when(getLastVideo.calculate()).then(function(testValue){
 						var vimeoObject = new Vimeo();
@@ -69,10 +71,8 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 			      		vimeoObject.set("publishedAt", singleItem.created_time);
 			      		vimeoObject.save();
 				  	}
-				  	if (vimeoObject.get('plays') !== parseInt(singleItem.stats.plays)) {
-				  		vimeoObject.set('plays', parseInt(singleItem.stats.plays));
-				  		vimeoObject.save();
-				  	}
+			  		vimeoObject.set('plays', parseInt(singleItem.stats.plays));
+			  		vimeoObject.save();
 			    }
 		    });
 		  },
@@ -83,18 +83,19 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 	});
 });
 
-// Parse.Cloud.define('vimeoPlays', function(request, request) {
-// 	var query = new Parse.Query("youtube");
-// 	query.find().then(function(youtubeCollection) {
-// 		var results = [];
-// 		_.each(youtubeCollection, function(singleYoutubeObject){
-// 			var obj = {
-// 				title: singleYoutubeObject.get('title'),
-// 				plays: singleYoutubeObject.get('plays')
-// 			}
-// 			results.push(obj);
-// 		});
+Parse.Cloud.define('vimeoPlays', function(request, request) {
+	var query = new Parse.Query("vimeo");
+	query.find().then(function(vimeoCollection) {
+		var results = [];
+		_.each(vimeoCollection, function(singleVimeo){
+			var obj = {
+				id: singleSoundcloud.get('vimeoId'),
+				title: singleVimeo.get('title'),
+				plays: singleVimeo.get('plays')
+			}
+			results.push(obj);
+		});
 
-// 		request.success(results);
-// 	});
-// });
+		request.success(results);
+	});
+});

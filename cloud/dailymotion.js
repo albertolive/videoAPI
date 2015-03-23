@@ -10,9 +10,11 @@ Parse.Cloud.job('dailymotion', function(request, status) {
 				query.equalTo('externalId', singleItem.id)
 				return query.first().then(function(foundedDailymotion) {
 
-					if(foundedDailymotion){
-						return foundedDailymotion.save();
-					}else{
+					if (foundedDailymotion) {
+						if (foundedDailymotion.get('plays') !== parseInt(singleItem.views_total)) {
+							return foundedDailymotion.save();
+						}
+					} else {
 						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 							var dailymotionObject = new Dailymotion();
 
@@ -47,10 +49,8 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 							dailymotionObject.set('title', singleItem.title);
 							dailymotionObject.save();
 						}
-					  	if (dailymotionObject.get('plays') !== parseInt(singleItem.views_total)) {
-							dailymotionObject.set('plays', parseInt(singleItem.views_total));
-					  		dailymotionObject.save();
-					  	}
+						dailymotionObject.set('plays', parseInt(singleItem.views_total));
+				  		dailymotionObject.save();
 					}
 				});
 			},
@@ -58,5 +58,22 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 			    console.error('Request second call failed with response code ' + httpResponse.status);
 			}
 		});
+	});
+});
+
+Parse.Cloud.define('dailymotionPlays', function(request, request) {
+	var query = new Parse.Query("youtube");
+	query.find().then(function(dailymotionCollection) {
+		var results = [];
+		_.each(dailymotionCollection, function(singleDailymotion){
+			var obj = {
+				id: singleSoundcloud.get('dailymotionId'),
+				title: singleDailymotion.get('title'),
+				plays: singleDailymotion.get('plays')
+			}
+			results.push(obj);
+		});
+
+		request.success(results);
 	});
 });
