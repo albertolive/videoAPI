@@ -48,12 +48,9 @@ exports.calculateTotal = function(totalObj){
 			var totalPlays = parseInt(vimeoInt)+parseInt(soundcloudInt)+parseInt(youtubeInt)+parseInt(dailymotionInt);
 			if (vimeoTitle) {
 				totalObj.set('title', vimeoTitle);
+				return totalObj.save();
 			}
 			if (totalObj.get('plays') !== totalPlays) {
-				totalObj.set('plays', totalPlays);
-			}
-			if (vimeoTitle || totalObj.get('plays') !== totalPlays) {
-				console.log('New plays!');
 				return totalObj.save();
 			}
 		});

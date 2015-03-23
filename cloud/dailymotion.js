@@ -45,12 +45,10 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 					if (dailymotionObject.get('externalId') == singleItem.id) {
 						if(dailymotionObject.get('title') === undefined){
 							dailymotionObject.set('title', singleItem.title);
+							dailymotionObject.save();
 						}
-						if (dailymotionObject.get('plays') !== parseInt(singleItem.views_total)) {
+					  	if (dailymotionObject.get('plays') !== parseInt(singleItem.views_total)) {
 							dailymotionObject.set('plays', parseInt(singleItem.views_total));
-						}
-						if (dailymotionObject.get('title') === undefined || dailymotionObject.get('plays') !== parseInt(singleItem.views_total)) {
-					  		console.log('New plays!');
 					  		dailymotionObject.save();
 					  	}
 					}

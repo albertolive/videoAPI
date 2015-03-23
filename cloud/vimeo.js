@@ -67,12 +67,10 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 				  	if (vimeoObject.get('title') === undefined) {
 				  		vimeoObject.set("title", singleItem.name);
 			      		vimeoObject.set("publishedAt", singleItem.created_time);
+			      		vimeoObject.save();
 				  	}
 				  	if (vimeoObject.get('plays') !== parseInt(singleItem.stats.plays)) {
 				  		vimeoObject.set('plays', parseInt(singleItem.stats.plays));
-				  	}
-				  	if (vimeoObject.get('title') === undefined || vimeoObject.get('plays') !== parseInt(singleItem.stats.plays)) {
-				  		console.log('New plays!');
 				  		vimeoObject.save();
 				  	}
 			    }

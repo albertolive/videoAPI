@@ -59,12 +59,10 @@ Parse.Cloud.afterSave("youtube", function(request) {
 		  	if(youtubeObject.get('title') === undefined){
 		  		youtubeObject.set("title", httpResponse.data.items[0].snippet.title);
 	      		youtubeObject.set("publishedAt", httpResponse.data.items[0].snippet.publishedAt);
+	      		youtubeObject.save();
 		  	}
 		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
-		  	  	youtubeObject.set("plays", parseInt(httpResponse.data.items[0].statistics.viewCount));
-		    }
-		    if (youtubeObject.get('title') === undefined || youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
-		  		console.log('New plays!');
+				youtubeObject.set('plays', parseInt(httpResponse.data.items[0].statistics.viewCount));
 		  		youtubeObject.save();
 		  	}
 		  },
