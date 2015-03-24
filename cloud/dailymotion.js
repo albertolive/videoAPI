@@ -14,7 +14,7 @@ Parse.Cloud.job('dailymotion', function(request, status) {
 						if (foundedDailymotion.get('plays') !== parseInt(singleItem.views_total)) {
 							return foundedDailymotion.save();
 						} else {
-							console.log('no more plays with ' + foundedDailymotion.get('title'));
+							console.log('Dailymotion - no more plays with ' + foundedDailymotion.get('title'));
 						}
 					} else {
 						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
@@ -52,7 +52,7 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 							dailymotionObject.save();
 						}
 						var lastPlays = parseInt(singleItem.views_total) - parseInt(dailymotionObject.get('plays'));
-						console.log(lastPlays + ' plays in ' + singleItem.title);
+						console.log('Dailymotion - ' + lastPlays + ' plays in ' + singleItem.title);
 						dailymotionObject.set('plays', parseInt(singleItem.views_total));
 				  		dailymotionObject.save();
 					}

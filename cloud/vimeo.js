@@ -24,7 +24,7 @@ Parse.Cloud.job('vimeo', function(request, status) {
 					if (foundedVimeo.get('plays') !== parseInt(singleItem.stats.plays)) {
 						return foundedVimeo.save();
 					} else {
-						console.log('no more plays with ' + foundedVimeo.get('title'));
+						console.log('Vimeo - no more plays with ' + foundedVimeo.get('title'));
 					}
 				}else{
 					return Parse.Promise.when(getLastVideo.calculate()).then(function(testValue){
@@ -74,7 +74,7 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 			      		vimeoObject.save();
 				  	}
 				  	var lastPlays = parseInt(singleItem.stats.plays) - parseInt(vimeoObject.get('plays'));
-					console.log(lastPlays + ' plays in ' + singleItem.name);
+					console.log('Vimeo - ' + lastPlays + ' plays in ' + singleItem.name);
 			  		vimeoObject.set('plays', parseInt(singleItem.stats.plays));
 			  		vimeoObject.save();
 			    }

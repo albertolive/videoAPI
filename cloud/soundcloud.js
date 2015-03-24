@@ -18,7 +18,7 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 						if (foundedSoundcloud.get('plays') !== parseInt(singleItem.playback_count)) {
 							return foundedSoundcloud.save();
 						} else {
-							console.log('no more plays with ' + foundedSoundcloud.get('title'));
+							console.log('Soundcloud - no more plays with ' + foundedSoundcloud.get('title'));
 						}
 					}else{
 
@@ -62,7 +62,7 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 							soundcloudObject.save();
 						}
 						var lastPlays = parseInt(singleItem.playback_count) - parseInt(soundcloudObject.get('plays'));
-						console.log(lastPlays + ' plays in ' + singleItem.title);
+						console.log('Soundcloud - ' + lastPlays + ' plays in ' + singleItem.title);
 						soundcloudObject.set('plays', parseInt(singleItem.playback_count));
 				  		soundcloudObject.save();
 					}

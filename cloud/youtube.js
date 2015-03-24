@@ -63,11 +63,11 @@ Parse.Cloud.afterSave("youtube", function(request) {
 		  	}
 		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
 		  		var lastPlays = parseInt(httpResponse.data.items[0].snippet.title) - parseInt(youtubeObject.get('plays'));
-				console.log(lastPlays + ' plays in ' + httpResponse.data.items[0].snippet.title);
+				console.log('Youtube - ' + lastPlays + ' plays in ' + httpResponse.data.items[0].snippet.title);
 				youtubeObject.set('plays', parseInt(httpResponse.data.items[0].statistics.viewCount));
 		  		youtubeObject.save();
 		  	} else {
-		  		console.log('no more plays with ' + youtubeObject.get("title"));
+		  		console.log('Youtube - no more plays with ' + youtubeObject.get("title"));
 		  	}
 		  },
 		  error: function(httpResponse) {
