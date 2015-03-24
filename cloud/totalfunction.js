@@ -51,10 +51,12 @@ exports.calculateTotal = function(totalObj){
 				return totalObj.save();
 			}
 			if (totalObj.get('plays') !== totalPlays) {
+				var lastPlays = parseInt(totalPlays) - parseInt(totalObj.get('plays'));
+				console.log('Total - ' + lastPlays + ' plays in ' + totalObj.get('title'));
 				totalObj.set('plays', totalPlays);
 				return totalObj.save();
 			} else {
-				console.log('no more plays with ' + totalObj.get('title'));
+				console.log('Total - no more plays with ' + totalObj.get('title'));
 				return "no more updates";
 			}
 		});
