@@ -13,6 +13,8 @@ Parse.Cloud.job('dailymotion', function(request, status) {
 					if (foundedDailymotion) {
 						if (foundedDailymotion.get('plays') !== parseInt(singleItem.views_total)) {
 							return foundedDailymotion.save();
+						} else {
+							console.log('no more plays with ' + foundedDailymotion.get('title'));
 						}
 					} else {
 						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
@@ -27,7 +29,7 @@ Parse.Cloud.job('dailymotion', function(request, status) {
 				});
 			});
 			Parse.Promise.when(prom).then(function() {
-		  		status.success();
+		  		status.success('success');
 		  	});
 		  },
 		  error: function(httpResponse) {
@@ -49,6 +51,8 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 							dailymotionObject.set('title', singleItem.title);
 							dailymotionObject.save();
 						}
+						var lastPlays = parseInt(singleItem.views_total) - parseInt(dailymotionObject.get('plays'));
+						console.log(lastPlays + ' plays in ' + singleItem.title);
 						dailymotionObject.set('plays', parseInt(singleItem.views_total));
 				  		dailymotionObject.save();
 					}

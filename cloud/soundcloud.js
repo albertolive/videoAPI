@@ -17,6 +17,8 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 					if(foundedSoundcloud){
 						if (foundedSoundcloud.get('plays') !== parseInt(singleItem.playback_count)) {
 							return foundedSoundcloud.save();
+						} else {
+							console.log('no more plays with ' + foundedSoundcloud.get('title'));
 						}
 					}else{
 
@@ -33,7 +35,7 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 				});
 			});
 			Parse.Promise.when(prom).then(function() {
-		  		status.success();
+		  		status.success('success');
 		  	});
 		  },
 		  error: function(httpResponse) {
@@ -59,6 +61,8 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 							soundcloudObject.set('publishedAt', singleItem.created_at);
 							soundcloudObject.save();
 						}
+						var lastPlays = parseInt(singleItem.playback_count) - parseInt(soundcloudObject.get('plays'));
+						console.log(lastPlays + ' plays in ' + singleItem.title);
 						soundcloudObject.set('plays', parseInt(singleItem.playback_count));
 				  		soundcloudObject.save();
 					}

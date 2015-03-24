@@ -18,9 +18,7 @@ Parse.Cloud.job('youtube', function(request, status) {
 			return query.first().then(function(foundedYoutube) {
 
 				if(foundedYoutube){
-					if (foundedYoutube.get('plays') !== parseInt(singleItem.views_total)) {
-						return foundedYoutube.save();
-					}
+					return foundedYoutube.save();
 				}else{
 					return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 						var youtubeObject = new Youtube();
@@ -35,7 +33,7 @@ Parse.Cloud.job('youtube', function(request, status) {
 		});
 
 	  	Parse.Promise.when(prom).then(function() {
-	  		status.success();
+	  		status.success('success');
 	  	});
 	  },
 	  error: function(httpResponse) {
@@ -64,8 +62,12 @@ Parse.Cloud.afterSave("youtube", function(request) {
 	      		youtubeObject.save();
 		  	}
 		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
+		  		var lastPlays = parseInt(httpResponse.data.items[0].snippet.title) - parseInt(youtubeObject.get('plays'));
+				console.log(lastPlays + ' plays in ' + httpResponse.data.items[0].snippet.title);
 				youtubeObject.set('plays', parseInt(httpResponse.data.items[0].statistics.viewCount));
 		  		youtubeObject.save();
+		  	} else {
+		  		console.log('no more plays with ' + youtubeObject.get("title"));
 		  	}
 		  },
 		  error: function(httpResponse) {
