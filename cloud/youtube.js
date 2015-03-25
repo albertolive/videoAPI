@@ -63,7 +63,9 @@ Parse.Cloud.afterSave("youtube", function(request) {
 		  	}
 		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
 		  		var lastPlays = parseInt(httpResponse.data.items[0].snippet.title) - parseInt(youtubeObject.get('plays'));
-				console.log('Youtube - ' + lastPlays + ' plays in ' + httpResponse.data.items[0].snippet.title);
+		  		if (lastPlays !== 0) {
+					console.log('Youtube - ' + lastPlays + ' plays in ' + httpResponse.data.items[0].snippet.title);
+				}
 				youtubeObject.set('plays', parseInt(httpResponse.data.items[0].statistics.viewCount));
 		  		youtubeObject.save();
 		  	} else {

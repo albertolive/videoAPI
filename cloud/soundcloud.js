@@ -62,7 +62,9 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 							soundcloudObject.save();
 						}
 						var lastPlays = parseInt(singleItem.playback_count) - parseInt(soundcloudObject.get('plays'));
-						console.log('Soundcloud - ' + lastPlays + ' plays in ' + singleItem.title);
+						if (lastPlays !== 0) {
+							console.log('Soundcloud - ' + lastPlays + ' plays in ' + singleItem.title);
+						}
 						soundcloudObject.set('plays', parseInt(singleItem.playback_count));
 				  		soundcloudObject.save();
 					}

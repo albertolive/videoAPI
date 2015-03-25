@@ -74,7 +74,9 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 			      		vimeoObject.save();
 				  	}
 				  	var lastPlays = parseInt(singleItem.stats.plays) - parseInt(vimeoObject.get('plays'));
-					console.log('Vimeo - ' + lastPlays + ' plays in ' + singleItem.name);
+					if (lastPlays !== 0) {
+						console.log('Vimeo - ' + lastPlays + ' plays in ' + singleItem.name);
+			  		}
 			  		vimeoObject.set('plays', parseInt(singleItem.stats.plays));
 			  		vimeoObject.save();
 			    }

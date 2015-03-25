@@ -52,7 +52,9 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 							dailymotionObject.save();
 						}
 						var lastPlays = parseInt(singleItem.views_total) - parseInt(dailymotionObject.get('plays'));
-						console.log('Dailymotion - ' + lastPlays + ' plays in ' + singleItem.title);
+						if (lastPlays !== 0) {
+							console.log('Dailymotion - ' + lastPlays + ' plays in ' + singleItem.title);
+						}
 						dailymotionObject.set('plays', parseInt(singleItem.views_total));
 				  		dailymotionObject.save();
 					}
