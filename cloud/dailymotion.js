@@ -66,20 +66,3 @@ Parse.Cloud.afterSave("dailymotion", function(request) {
 		});
 	});
 });
-
-Parse.Cloud.define('dailymotionPlays', function(request, request) {
-	var query = new Parse.Query("youtube");
-	query.find().then(function(dailymotionCollection) {
-		var results = [];
-		_.each(dailymotionCollection, function(singleDailymotion){
-			var obj = {
-				id: singleSoundcloud.get('dailymotionId'),
-				title: singleDailymotion.get('title'),
-				plays: singleDailymotion.get('plays')
-			}
-			results.push(obj);
-		});
-
-		request.success(results);
-	});
-});

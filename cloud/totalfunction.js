@@ -51,10 +51,20 @@ exports.calculateTotal = function(totalObj){
 				return totalObj.save();
 			}
 			if (totalObj.get('plays') !== totalPlays) {
-				var lastPlays = parseInt(totalPlays) - parseInt(totalObj.get('plays'));
-				console.log('Total - ' + lastPlays + ' plays in ' + totalObj.get('title'));
+
 				totalObj.set('plays', totalPlays);
+
+				var lastPlays = parseInt(totalPlays) - parseInt(totalObj.get('plays'));
+
+				if (totalObj.get('day') > 0) {
+					totalObj.set('day', lastPlays + parseInt(totalObj.get('plays')));
+				} else {
+					totalObj.set('plays', lastPlays);
+				}
+				console.log('Total - ' + lastPlays + ' plays in ' + totalObj.get('title'));
+				
 				return totalObj.save();
+
 			} else {
 				console.log('Total - no more plays with ' + totalObj.get('title'));
 				return "no more updates";
@@ -62,19 +72,3 @@ exports.calculateTotal = function(totalObj){
 		});
 	});	
 };
-
-Parse.Cloud.define('totalPlays', function(request, request) {
-	var query = new Parse.Query("total");
-	query.find().then(function(totalCollection) {
-		var results = [];
-		_.each(totalCollection, function(singleTotal){
-			var obj = {
-				title: singleTotal.get('title'),
-				plays: singleTotal.get('plays')
-			}
-			results.push(obj);
-		});
-
-		request.success(results);
-	});
-});

@@ -12,8 +12,22 @@ Parse.Cloud.job('totalVideoPlays', function(request, status) {
 		});	
 
 		Parse.Promise.when(dependencies).then(function() {
+
+			Parse.Events.bind('total');
+
 	  		status.success('Success');
 	  	});
 	});
+});
+
+Parse.Cloud.job('removeDayPlays', function(request, status) {
 	
+	var queryTotals = new Parse.Query('total');	
+	queryTotals.find().then(function(totalCollection){
+
+		_.each(totalCollection, function(singleTotal){
+			singleTotal.set('day', 0);
+			singleTotal.save();
+		});
+	});
 });

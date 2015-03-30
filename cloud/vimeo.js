@@ -88,20 +88,3 @@ Parse.Cloud.afterSave("vimeo", function(request) {
 		});
 	});
 });
-
-Parse.Cloud.define('vimeoPlays', function(request, request) {
-	var query = new Parse.Query("vimeo");
-	query.find().then(function(vimeoCollection) {
-		var results = [];
-		_.each(vimeoCollection, function(singleVimeo){
-			var obj = {
-				id: singleSoundcloud.get('vimeoId'),
-				title: singleVimeo.get('title'),
-				plays: singleVimeo.get('plays')
-			}
-			results.push(obj);
-		});
-
-		request.success(results);
-	});
-});

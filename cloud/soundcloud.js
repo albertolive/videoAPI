@@ -76,20 +76,3 @@ Parse.Cloud.afterSave("soundcloud", function(request) {
 		});
 	});
 });
-
-Parse.Cloud.define('soundCloudPlays', function(request, request) {
-	var query = new Parse.Query("youtube");
-	query.find().then(function(soundcloudCollection) {
-		var results = [];
-		_.each(soundcloudCollection, function(singleSoundcloud){
-			var obj = {
-				id: singleSoundcloud.get('soundCloudId'),
-				title: singleSoundcloud.get('title'),
-				plays: singleSoundcloud.get('plays')
-			}
-			results.push(obj);
-		});
-
-		request.success(results);
-	});
-});
