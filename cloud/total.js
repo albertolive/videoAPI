@@ -35,6 +35,8 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 				html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table> ';
 			}
 
+			var week = parseInt(singleTotal.get('week')) + parseInt(singleTotal.get('day'));
+			singleTotal.set('week', week);
 			singleTotal.set('day', 0);
 			singleTotal.save();
 		});
