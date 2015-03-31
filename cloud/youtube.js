@@ -62,9 +62,9 @@ Parse.Cloud.afterSave("youtube", function(request) {
 	      		youtubeObject.save();
 		  	}
 		  	if (youtubeObject.get('plays') !== parseInt(httpResponse.data.items[0].statistics.viewCount)) {
-		  		var lastPlays = parseInt(httpResponse.data.items[0].snippet.title) - parseInt(youtubeObject.get('plays'));
+		  		var lastPlays = parseInt(httpResponse.data.items[0].statistics.viewCount) - parseInt(youtubeObject.get('plays'));
 		  		if (lastPlays !== 0) {
-					console.log('Youtube - ' + lastPlays + ' plays in ' + httpResponse.data.items[0].snippet.title);
+					console.log('Youtube - ' + parseInt(lastPlays) + ' plays in ' + httpResponse.data.items[0].snippet.title);
 				}
 				youtubeObject.set('plays', parseInt(httpResponse.data.items[0].statistics.viewCount));
 		  		youtubeObject.save();

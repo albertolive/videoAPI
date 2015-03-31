@@ -55,7 +55,7 @@ exports.calculateTotal = function(totalObj){
 				console.log('Total - ' + lastPlays + ' plays in ' + totalObj.get('title'));
 
 				if (totalObj.get('day') > 0) {
-					totalObj.set('day', lastPlays + parseInt(totalObj.get('days')));
+					totalObj.set('day', parseInt(lastPlays) + parseInt(totalObj.get('day')));
 				} else {
 					totalObj.set('day', lastPlays);
 				}
