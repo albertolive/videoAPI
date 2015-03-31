@@ -26,38 +26,34 @@ Parse.Cloud.job('totalVideoPlays', function(request, status) {
 Parse.Cloud.job('removeDayPlays', function(request, status) {
 	
 	var queryTotals = new Parse.Query('total');	
-	queryTotals.find().then(function(totalCollection){
-		var results = [];
+	queryTotals.descending("day");
+	queryTotals.find().then(function(totalCollection) {
+		var html = [];
 		_.each(totalCollection, function(singleTotal) {
 			if (singleTotal.get('day') > 0) {
-				var obj = {
-					title: singleTotal.get('title'),
-					plays: singleTotal.get('day')
-				}
-				results.push(obj);
-			} else {
-				var obj = {
-					error: "no plays"
-				}
+				var title = singleTotal.get('title').replace('(Albert Olive Mashup)','');
+				html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table> ';
 			}
 
 			singleTotal.set('day', 0);
 			singleTotal.save();
 		});
 
+		var date = moment().format('D-M-YYYY');
+
 		Mailgun.sendEmail({
 		  to: "albertolivecorbella@gmail.com",
 		  from: "mailgun@sandboxf2449dafc4ae469a81adb23d9994645b.mailgun.org",
-		  subject: "New plays of" + moment(Date),
-		  text: JSON.stringify(results)
+		  subject: "New plays of " + date,
+		  html: html
 		}, {
 		  success: function(httpResponse) {
 		    console.log(httpResponse);
-		    response.success("Email sent!");
+		    status.success("Email sent!");
 		  },
 		  error: function(httpResponse) {
 		    console.error(httpResponse);
-		    response.error("Uh oh, something went wrong");
+		    status.error("Uh oh, something went wrong");
 		  }
 		});
 	});
