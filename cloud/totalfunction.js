@@ -51,17 +51,16 @@ exports.calculateTotal = function(totalObj){
 				return totalObj.save();
 			}
 			if (totalObj.get('plays') !== totalPlays) {
-
-				totalObj.set('plays', totalPlays);
-
 				var lastPlays = parseInt(totalPlays) - parseInt(totalObj.get('plays'));
+				console.log('Total - ' + lastPlays + ' plays in ' + totalObj.get('title'));
 
 				if (totalObj.get('day') > 0) {
-					totalObj.set('day', lastPlays + parseInt(totalObj.get('plays')));
+					totalObj.set('day', lastPlays + parseInt(totalObj.get('days')));
 				} else {
-					totalObj.set('plays', lastPlays);
+					totalObj.set('day', lastPlays);
 				}
-				console.log('Total - ' + lastPlays + ' plays in ' + totalObj.get('title'));
+
+				totalObj.set('plays', totalPlays);
 				
 				return totalObj.save();
 
