@@ -35,16 +35,9 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 			var today = moment().format('MMM D, YYYY');
 			var title = singleTotal.get('title').replace('(Albert Olive Mashup)','');
 
-			var weekDate = singleTotal.get('weekDate');
-			weekDate.setDate(weekDate.getDate()+7);
-			weekDate = moment().format('MMM D, YYYY');
-
-			var monthDate = singleTotal.get('monthDate');
-			monthDate.setDate(monthDate.getDate()+30);
-			monthDate = moment().format('MMM D, YYYY');
-
-			var nextDate = moment().format('MMM D, YYYY, HH:mm');
-			nextDate = new Date(nextDate);
+			var weekDate = moment(singleTotal.get('weekDate'), moment.ISO_8601).add('d', 7).format('MMM D, YYYY');
+			var monthDate = moment(singleTotal.get('monthDate'), moment.ISO_8601).add('M', 1).format('MMM D, YYYY');
+			var nextDate = new Date(moment().format('MMM D, YYYY, HH:mm'));
 
 			// CONSTRUCTING HTML
 
@@ -62,7 +55,7 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 				}
 			}
 
-			// ADDING VIEWS ON WEEK
+			// // ADDING VIEWS ON WEEK
 
 			if (parseInt(singleTotal.get('week')) > 0) {
 				week = parseInt(singleTotal.get('week')) + parseInt(singleTotal.get('day'));
@@ -70,9 +63,10 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 				week = parseInt(singleTotal.get('day'));
 			}
 
-			//WEEK 
+			// //WEEK 
 
 			if (weekDate === today) {
+				singleTotal.set('week', week);
 				if (parseInt(singleTotal.get('month')) > 0) {
 					month = parseInt(singleTotal.get('month')) + parseInt(singleTotal.get('week'));
 				} else {
@@ -85,14 +79,14 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 				singleTotal.set('week', week);
 			}
 
-			// MONTH
+			// // MONTH
 
 			if (monthDate === today) {
 				singleTotal.set('month', 0);
 				singleTotal.set('monthDate', nextDate);
 			}
 
-			// REMOVING VIEWS ON DAY - TOTAL FUNCTION ADD IT
+			// // REMOVING VIEWS ON DAY - TOTAL FUNCTION ADD IT
 
 			singleTotal.set('day', 0);
 			singleTotal.save();
