@@ -21,13 +21,11 @@ Parse.Cloud.job('soundcloud', function(request, status) {
 							console.log('Soundcloud - no more plays with ' + foundedSoundcloud.get('title'));
 						}
 					}else{
-
 						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 							var soundcloudObject = new Soundcloud();
-				  			
 				  			soundcloudObject.set('externalId', singleItem.id);
 				  			soundcloudObject.set('soundCloudId', newVideoId);
-
+				  			soundcloudObject.set('plays', 0);
 							return soundcloudObject.save();
 						});
 					

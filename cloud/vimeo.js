@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var getLastVideo = require('cloud/lastVideoId.js');
 
 Parse.Cloud.job('vimeo', function(request, status) {
 	Parse.Cloud.httpRequest({
@@ -27,12 +28,11 @@ Parse.Cloud.job('vimeo', function(request, status) {
 						console.log('Vimeo - no more plays with ' + foundedVimeo.get('title'));
 					}
 				}else{
-					return Parse.Promise.when(getLastVideo.calculate()).then(function(testValue){
+					return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 						var vimeoObject = new Vimeo();
-
 				  		vimeoObject.set('externalId', singleItem.uri);
 				  		vimeoObject.set('vimeoId', newVideoId);
-
+				  		vimeoObject.set('plays', 0);
 						return vimeoObject.save();
 					});
 				}

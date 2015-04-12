@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var getLastVideo = require('cloud/lastVideoId.js');
 
 Parse.Cloud.job('dailymotion', function(request, status) {
 	Parse.Cloud.httpRequest({
@@ -19,10 +20,9 @@ Parse.Cloud.job('dailymotion', function(request, status) {
 					} else {
 						return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 							var dailymotionObject = new Dailymotion();
-
 					  		dailymotionObject.set('externalId', singleItem.id);
 					  		dailymotionObject.set('dailymotionId', newVideoId);
-
+					  		dailymotionObject.set('plays', 0);
 							return dailymotionObject.save();
 						});
 					}

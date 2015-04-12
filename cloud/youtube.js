@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var getLastVideo = require('cloud/lastVideoId.js');
 
 Parse.Cloud.job('youtube', function(request, status) {
 	Parse.Cloud.httpRequest({
@@ -22,9 +23,9 @@ Parse.Cloud.job('youtube', function(request, status) {
 				}else{
 					return Parse.Promise.when(getLastVideo.calculate()).then(function(newVideoId){
 						var youtubeObject = new Youtube();
-
 				  		youtubeObject.set('externalId', singleItem.contentDetails.upload.videoId);
 				  		youtubeObject.set('youtubeId', newVideoId);
+				  		youtubeObject.set('plays', 0);
 
 						return youtubeObject.save();
 					});
