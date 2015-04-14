@@ -43,11 +43,11 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 
 			if (weekDate === today) {
 				if (parseInt(singleTotal.get('week')) > 0) {
-					html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('week') + '</b></td></tr></table> <br><hr><br> <table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table>';
+					html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('week') + '</b></td></tr></table> <br><br> <table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table><hr>';
 				}
 			} else if (monthDate === today) {
 				if (parseInt(singleTotal.get('month')) > 0) {
-					html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('month') + '</b></td></tr></table> <br><hr><br> <table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table>';
+					html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('month') + '</b></td></tr></table> <br><br> <table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table><hr>';
 				}
 			} else {
 				if (parseInt(singleTotal.get('day')) > 0) {
@@ -55,44 +55,42 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 				}
 			}
 
-			// // ADDING VIEWS ON WEEK
+			// ADDING VIEWS ON WEEK AND MONTH
 
 			if (parseInt(singleTotal.get('week')) > 0) {
 				week = parseInt(singleTotal.get('week')) + parseInt(singleTotal.get('day'));
 			} else {
 				week = parseInt(singleTotal.get('day'));
 			}
+			if (parseInt(singleTotal.get('month')) > 0) {
+				month = parseInt(singleTotal.get('month')) + parseInt(singleTotal.get('week'));
+			} else {
+				month = parseInt(singleTotal.get('week'));
+			}
+			singleTotal.set('week', week);
+			singleTotal.set('month', month);
 
-			// //WEEK 
+			// NEW DATE ON WEEK 
 
 			if (weekDate === today) {
-				singleTotal.set('week', week);
-				if (parseInt(singleTotal.get('month')) > 0) {
-					month = parseInt(singleTotal.get('month')) + parseInt(singleTotal.get('week'));
-				} else {
-					month = parseInt(singleTotal.get('week'));
-				}
-				singleTotal.set('month', month);
 				singleTotal.set('week', 0);
 				singleTotal.set('weekDate', nextDate);
-			} else {
-				singleTotal.set('week', week);
 			}
 
-			// // MONTH
+			// NEW DATE ON MONTH
 
 			if (monthDate === today) {
 				singleTotal.set('month', 0);
 				singleTotal.set('monthDate', nextDate);
 			}
 
-			// // REMOVING VIEWS ON DAY - TOTAL FUNCTION ADD IT
+			// REMOVING VIEWS ON DAY - TOTAL FUNCTION ADD IT
 
 			singleTotal.set('day', 0);
 			singleTotal.save();
 		});
 
-		//SENDING EMAIL
+		// SENDING EMAIL
 
 		var date = moment().format('D-M-YYYY');
 
