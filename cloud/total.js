@@ -43,11 +43,11 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 
 			if (weekDate === today) {
 				if (parseInt(singleTotal.get('week')) > 0) {
-					html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('week') + '</b></td></tr></table> <br><br> <table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table><hr>';
+					html = html + '<table><tr><td>Week ' + title + '</td><td><b>' + singleTotal.get('week') + '</b></td></tr></table> <br><br> <table><tr><td>Day ' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table><hr>';
 				}
 			} else if (monthDate === today) {
 				if (parseInt(singleTotal.get('month')) > 0) {
-					html = html + '<table><tr><td>' + title + '</td><td><b>' + singleTotal.get('month') + '</b></td></tr></table> <br><br> <table><tr><td>' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table><hr>';
+					html = html + '<table><tr><td>Month ' + title + '</td><td><b>' + singleTotal.get('month') + '</b></td></tr></table> <br><br> <table><tr><td>Day ' + title + '</td><td><b>' + singleTotal.get('day') + '</b></td></tr></table><hr>';
 				}
 			} else {
 				if (parseInt(singleTotal.get('day')) > 0) {
