@@ -62,12 +62,15 @@ Parse.Cloud.job('removeDayPlays', function(request, status) {
 			} else {
 				week = parseInt(singleTotal.get('day'));
 			}
+
+			singleTotal.set('week', week);
+
 			if (parseInt(singleTotal.get('month')) > 0) {
 				month = parseInt(singleTotal.get('month')) + parseInt(singleTotal.get('week'));
 			} else {
 				month = parseInt(singleTotal.get('week'));
 			}
-			singleTotal.set('week', week);
+
 			singleTotal.set('month', month);
 
 			// NEW DATE ON WEEK 
